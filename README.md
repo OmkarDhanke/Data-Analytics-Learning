@@ -17,37 +17,30 @@
 
 ## 🚀 Goals of This Repository
 
-- 📚 **Master the core** data analytics tools  
-- 🧭 **Document** every step of my learning path  
-- 🧪 **Build** mini projects to apply real-world scenarios  
-- 🧠 **Create** a personal knowledge base that grows over time
+- 📚 **Master the Craft** → Build a strong foundation to grow into a skilled and impactful data analyst.  
+- 🧭 **Document the Journey** → Capture every milestone, lesson, and insight along the way.  
+- 🧪 **Learn by Doing** → Apply concepts through focused mini projects that bring real-world problems to life.  
+- 🧠 **Inspire & Share** → Create a transparent learning hub that not only tracks my growth but can also help others on a similar path.
 
 ---
 
 ## 🗂️ How to Explore
 
-1. 🧭 **Pick a tool** → Start with a folder like `SQL-Journey` or `Python-Journey`.  
-2. 🧪 **Check the `Practice` folder** → See applied exercises and solutions.  
-3. 📝 **Read the `Notes`** → Quick recaps of key concepts.  
-4. 🌱 **Follow the growth** → This repo will evolve with every new skill I learn.
+1. 🧭 **Pick a Tool** → Begin with a folder such as `SQL-Journey` or `Python-Journey` to explore a specific skill area.  
+2. 🧑‍🏫 **Class** → Contains structured learning materials and concepts I’ve covered.  
+3. 🧪 **Practice** → Includes hands-on exercises, problem-solving, and applied learning.  
+4. 📝 **Notes** → Personal takeaways, key concepts, and quick references created during the learning journey.  
+5. 🌱 **Follow the Growth** → This repository will continue to expand as I learn and apply new skills.
 
 ---
 
-## 🧭 Roadmap & Upcoming Additions
-
-- 📊 Real-world mini projects  
-- 🧩 End-to-end case studies combining multiple tools  
-- 🐍 Advanced SQL & Python topics  
-- 📈 More dashboarding and storytelling practice
-
----
 
 ## 👤 About Me
 
 I’m passionate about **turning raw data into meaningful insights**.  
 This repository reflects my continuous learning, hands-on exploration, and structured growth in the data analytics domain.
 
-📬 **Let’s connect:** [LinkedIn](www.linkedin.com/in/omkar-dhanke)
+📬 **Let’s connect:** [LinkedIn](https://www.linkedin.com/in/omkar-dhanke)
 
 ---
 
