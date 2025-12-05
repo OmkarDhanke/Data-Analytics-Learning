@@ -5,6 +5,7 @@ CREATE TABLE SalesOrders (
     Salesperson VARCHAR(50),
     ProductCategory VARCHAR(50),
     SaleAmount DECIMAL(10,2)
+    
 );
 
 INSERT INTO SalesOrders (OrderID, OrderDate, Region, Salesperson, ProductCategory, SaleAmount) 
