@@ -4,7 +4,7 @@ CREATE TABLE EmployeePerformance (
     EmployeeID INT PRIMARY KEY,
     FullName VARCHAR(100),
     Department VARCHAR(50),
-    RegionCode VARCHAR(5),
+    RegionCode VARCHAR(5), 
     PerformanceScore INT,
     ProjectsCompleted INT
 );
