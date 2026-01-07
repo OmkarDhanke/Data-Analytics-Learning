@@ -139,6 +139,7 @@ WHERE EXISTS (
 -- Count how many sales fall into each bucket.
 -- Hint: You can write logic in the SELECT clause, and then Group By that same logic (or alias).
 
+
 -- Question 9: Advanced Conditional Average
 -- Calculate the Average Sale Amount for 'Laptops'.
 -- Do this using standard AVG functions (easy way) OR try using SUM/COUNT logic manually to verify.
