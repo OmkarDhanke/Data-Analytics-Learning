@@ -17,12 +17,14 @@ CREATE TABLE employees (
     performance_score INT   -- 1 to 10 scale
 );
 
+DROP TABLE sales;
+
 CREATE TABLE sales (
     sale_id INT AUTO_INCREMENT PRIMARY KEY,
     emp_id INT,
     product_category VARCHAR(30), -- 'Laptop', 'Phone', 'Tablet'
     sale_amount DECIMAL(10,2),
-    FOREIGN KEY (emp_id) REFERENCES employees(emp_id)
+    CONSTRAINT Sale_fk_1 FOREIGN KEY (emp_id) REFERENCES employees(emp_id)
 );
 
 -- 2. POPULATE DATA
@@ -138,8 +140,11 @@ WHERE EXISTS (
 -- Logic: If amount > 1000 it's 'Big Ticket', otherwise 'Small Ticket'.
 -- Count how many sales fall into each bucket.
 -- Hint: You can write logic in the SELECT clause, and then Group By that same logic (or alias).
-
-
+SELECT
+	SUM(CASE WHEN sale_amount > 1000 THEN 1 ELSE 0 END) as 'Big Ticket',
+    SUM(CASE WHEN sale_amount < 1000 THEN 1 ELSE 0 END) as 'Small Ticket'
+FROM
+	techzone_db.sales
 -- Question 9: Advanced Conditional Average
 -- Calculate the Average Sale Amount for 'Laptops'.
 -- Do this using standard AVG functions (easy way) OR try using SUM/COUNT logic manually to verify.
