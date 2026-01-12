@@ -336,7 +336,7 @@ HAVING
         WHERE p_laptop.product_name = 'Laptop'
     );
     
-	-- Q17: Find all customers who have placed at least one order but have never purchased 'Smartphone'.
+-- Q17: Find all customers who have placed at least one order but have never purchased 'Smartphone'.
 SELECT
     c.customer_name
 FROM
