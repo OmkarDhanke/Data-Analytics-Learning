@@ -149,14 +149,30 @@ GROUP BY m1.full_name;
 SELECT
 	date_format(check_in_time,'%d-%m-%Y') as New_Date
 FROM
-	fitlife_db.visits
+	fitlife_db.visits;
     
 -- Question 9: Checking for "Expired" (Logic)
 -- Assume today is '2024-04-01'.
 -- Find any 'Monthly' memberships that started before '2024-03-01' (meaning they are now > 30 days old).
 -- Hint: WHERE start_date < DATE_SUB('2024-04-01', INTERVAL 30 DAY).
-
-
+SELECT
+	member_id,
+    plan_type
+FROM	
+	fitlife_db.memberships
+WHERE
+	start_date < date_sub('2024-04-01',interval 30 day)
+    AND
+    plan_type = 'monthly';
+    
 -- Question 10: Age Grouping
 -- Count how many members are "Under 30" vs "30 and Over".
 -- Hint: Combine your Age calculation (Q1) with a CASE statement or IF logic.
+SELECT
+	full_name,
+    CASE
+		WHEN timestampdiff(Year,date_of_birth,Curdate()) <= 30 THEN 'Under 30'
+        WHEN timestampdiff(Year,date_of_birth,Curdate()) >= 30 THEN '30 and Over'
+	END as 'Age Group'
+FROM
+	fitlife_db.members;
