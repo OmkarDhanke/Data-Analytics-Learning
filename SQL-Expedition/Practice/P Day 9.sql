@@ -64,22 +64,45 @@ INSERT INTO applications (job_id, candidate_id, app_date) VALUES
 (2, 5, '2024-01-20'), -- Nick applies for Sr Analyst (Unqualified?)
 (4, 4, '2024-01-22'); -- Sarah applies for Sr Python
 
-
 -- 3. PRACTICE QUESTIONS
 -- =============================================================
--- 
 
 -- Question 1: Your First CTE (Simple)
 -- We want to analyze "Senior" candidates only.
 -- Step 1: Create a CTE named 'Seniors' that selects candidates with > 4 years of experience.
 -- Step 2: Select all columns from that CTE.
 -- Hint: Start with "WITH Seniors AS (SELECT ... ) SELECT * FROM Seniors".
+WITH Seniors as 
+(
+	SELECT
+		* 
+	FROM 
+		nextgen_db.candidates
+	WHERE 
+		years_experience > 4)
+SELECT 
+	*
+FROM 
+	Seniors;
 
 -- Question 2: CTE for Aggregation
 -- We want to count how many applications each job has received.
 -- Step 1: Create a CTE named 'AppCounts' that Groups By 'job_id' and counts applications.
 -- Step 2: Join that CTE with the 'jobs' table to show the Job Title and the Count.
 -- Hint: WITH AppCounts AS (...) SELECT ... FROM jobs JOIN AppCounts ON ...
+WITH AppCounts AS (
+SELECT
+	job_id,
+	count(app_id) as counts
+FROM
+	nextgen_db.applications
+GROUP BY job_id)
+SELECT
+	J.job_title,
+    A.counts
+FROM nextgen_db.jobs J
+JOIN AppCounts A
+ON A.job_id = J.job_id;
 
 -- Question 3: The "Perfect Match" Logic (Complex Filtering)
 -- We want to find applications where the candidate is actually qualified.
