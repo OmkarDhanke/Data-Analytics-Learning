@@ -149,6 +149,12 @@ FROM
 -- Calculate the Average Sale Amount for 'Laptops'.
 -- Do this using standard AVG functions (easy way) OR try using SUM/COUNT logic manually to verify.
 -- Hint: Standard AVG with a WHERE clause is fine here.
+SELECT 
+    AVG(sale_amount) AS Avg_Laptop_Sale
+FROM 
+    techzone_db.sales
+WHERE 
+    product_category = 'Laptop';
 
 -- Question 10: The Ultimate Conditional Aggregation (Grouped Pivot)
 -- List ALL Sales employees (Name).
@@ -157,3 +163,16 @@ FROM
 -- 2. Total Count of 'Tablet' sales
 -- 3. Total Count of 'Phone' sales
 -- Hint: You need to Group By the person, then use three separate conditional counters in the SELECT list.
+SELECT
+    e.name,
+    SUM(CASE WHEN s.product_category = 'Laptop' THEN 1 ELSE 0 END) AS Laptop_Sales_Count,
+    SUM(CASE WHEN s.product_category = 'Tablet' THEN 1 ELSE 0 END) AS Tablet_Sales_Count,
+    SUM(CASE WHEN s.product_category = 'Phone' THEN 1 ELSE 0 END) AS Phone_Sales_Count
+FROM
+    techzone_db.employees e
+LEFT JOIN
+    techzone_db.sales s ON e.emp_id = s.emp_id
+WHERE
+    e.department = 'Sales'
+GROUP BY
+    e.name;
