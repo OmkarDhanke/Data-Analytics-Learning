@@ -109,6 +109,21 @@ ON A.job_id = J.job_id;
 -- Step 1: Create a CTE that joins Candidates, Jobs, and Applications.
 -- Step 2: Filter the result to show only rows where (candidate_exp >= job_min_exp).
 -- Hint: Do the heavy lifting (Joins) inside the CTE, then do the filtering in the main SELECT.
+WITH AppDetails AS (
+    SELECT
+        c.full_name,
+        c.years_experience,
+        j.job_title,
+        j.min_experience,
+        a.app_date
+    FROM applications a
+    JOIN candidates c ON a.candidate_id = c.candidate_id
+    JOIN jobs j ON a.job_id = j.job_id
+)
+SELECT *
+FROM AppDetails
+WHERE years_experience >= min_experience;
+
 
 -- Question 4: Multiple CTEs (Chain of Logic)
 -- We want to compare the Average Expected Salary of candidates vs Average Offered Salary of jobs.
@@ -116,32 +131,89 @@ ON A.job_id = J.job_id;
 -- Step 2: Create CTE 'AvgJob' (calculates avg offered salary).
 -- Step 3: Select both values in the final query (using a cross join or comma).
 -- Hint: WITH AvgCand AS (...), AvgJob AS (...) SELECT ...
+WITH AvgCand AS (
+    SELECT AVG(expected_salary) AS avg_expected_salary
+    FROM candidates
+),
+AvgJob AS (
+    SELECT AVG(offered_salary) AS avg_offered_salary
+    FROM jobs
+)
+SELECT 
+    AvgCand.avg_expected_salary,
+    AvgJob.avg_offered_salary
+FROM AvgCand, AvgJob;
+
 
 -- Question 5: Creating a VIEW (Virtual Table)
 -- We frequently need to see a "clean" list of applications with Names and Titles (no IDs).
 -- Create a VIEW named 'view_application_details' that joins all three tables and selects:
 -- Candidate Name, Job Title, App Date.
 -- Hint: CREATE VIEW view_name AS SELECT ...
+CREATE VIEW view_application_details AS
+SELECT
+    c.full_name AS candidate_name,
+    j.job_title,
+    j.required_skill,
+    a.app_date
+FROM applications a
+JOIN candidates c ON a.candidate_id = c.candidate_id
+JOIN jobs j ON a.job_id = j.job_id;
+
 
 -- Question 6: Using a VIEW
 -- Now that you created the view in Q5, write a simple query to find all applications for 'Python' jobs.
 -- Hint: Treat the view exactly like a normal table. SELECT * FROM view_name WHERE ...
-
+SELECT *
+FROM view_application_details
+WHERE required_skill = 'Python';
+	
 -- Question 7: CTE vs Subquery (Readability Challenge)
 -- Find the name of the candidate with the highest expected salary.
 -- Do this using a CTE to find the Max Salary first, then join/filter.
 -- Hint: WITH MaxSal AS (SELECT MAX(...) ...) SELECT ... WHERE salary = (SELECT ... FROM MaxSal).
+WITH MaxSal AS (
+    SELECT MAX(expected_salary) AS max_salary
+    FROM candidates
+)
+SELECT full_name, expected_salary
+FROM candidates
+WHERE expected_salary = (SELECT max_salary FROM MaxSal);
 
 -- Question 8: Analyzing "Reach" Jobs (CTE)
 -- A "Reach" job is when a candidate applies for a job that pays MORE than they expected.
 -- Use a CTE to join the tables, and return the Candidate Name and the Difference (Offered - Expected).
 -- Filter for where Offered > Expected.
+WITH ReachJobs AS (
+    SELECT
+        c.full_name,
+        j.job_title,
+        j.offered_salary,
+        c.expected_salary,
+        (j.offered_salary - c.expected_salary) AS salary_difference
+    FROM applications a
+    JOIN candidates c ON a.candidate_id = c.candidate_id
+    JOIN jobs j ON a.job_id = j.job_id
+)
+SELECT full_name, job_title, salary_difference
+FROM ReachJobs
+WHERE salary_difference > 0;
 
 -- Question 9: Recursive CTE Concept (Bonus/Intro)
 -- (Just for fun/exposure, try this simple hierarchy logic)
 -- We don't have a hierarchy table here, so let's generate numbers 1 to 5 using a Recursive CTE.
 -- Hint: WITH RECURSIVE NumberGen AS (SELECT 1 UNION SELECT n+1 FROM NumberGen WHERE n<5) ...
+WITH RECURSIVE NumberGen AS (
+    SELECT 1 AS n
+    UNION ALL
+    SELECT n + 1
+    FROM NumberGen
+    WHERE n < 5
+)
+SELECT *
+FROM NumberGen;
 
 -- Question 10: Dropping a View
 -- We are done with the view from Q5. Remove it from the database.
 -- Hint: DROP VIEW ...
+DROP VIEW view_application_details;
