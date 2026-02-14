@@ -309,13 +309,93 @@ HAVING TotalAount > 1000;
 -- ==========================================
 
 -- Q21: (Self-Join) List Staff Name and their Manager's Name.
+SELECT 
+    s.name AS staff_name,
+    m.name AS manager_name
+FROM staff s
+LEFT JOIN staff m
+ON s.manager_id = m.staff_id;
+
 -- Q22: (COALESCE) Repeat Q21, but if the manager is NULL, display 'CEO'.
+SELECT 
+    s.name AS staff_name,
+    COALESCE(m.name, 'CEO') AS manager_name
+FROM staff s
+LEFT JOIN staff m
+ON s.manager_id = m.staff_id;
+
 -- Q23: (Date Math) Calculate the length of stay (in days) for every completed booking.
+SELECT
+    booking_id,
+    DATEDIFF(check_out_date, check_in_date) AS stay_days
+FROM bookings
+WHERE status = 'Completed';
+
 -- Q24: (Date Functions) Find all bookings that are scheduled for the month of July (Month 7).
--- Q25: (Anti-Join) Find bookings that have NOT been paid for yet (Bookings with no matching Payment).
+SELECT *
+FROM bookings
+WHERE MONTH(check_in_date) = 7;
+
+-- Q25: (Anti-Join) Find bookings that have NOT been paid for yet.
+SELECT
+    b.booking_id
+FROM bookings b
+LEFT JOIN payments p
+ON b.booking_id = p.booking_id
+WHERE p.payment_id IS NULL;
+
 -- Q26: (CTE) Create a CTE that calculates 'TotalRevenue' per Guest. Select guests who spent > $0.
--- Q27: (CTE Chain) CTE 1: Filter 'Completed' bookings. CTE 2: Join with Rooms. Final: Select Room Type and Count of completed bookings.
--- Q28: (View) Create a View named 'active_bookings' that shows Guest Name, Room Number, and Check-In Date for 'Confirmed' bookings only.
--- Q29: (Window Function/Logic) Find the booking with the latest Check-In Date. (Use ORDER BY ... LIMIT 1 or MAX).
--- Q30: (Complex Logic) Calculate the "Occupancy Rate" (Percentage) of our rooms. 
---      (Hint: Count DISTINCT room_ids in bookings / Total count of rooms * 100).
+WITH guest_revenue AS (
+    SELECT
+        g.guest_id,
+        g.first_name,
+        SUM(p.amount) AS total_spent
+    FROM guests g
+    JOIN bookings b ON g.guest_id = b.guest_id
+    JOIN payments p ON b.booking_id = p.booking_id
+    GROUP BY g.guest_id, g.first_name
+)
+SELECT *
+FROM guest_revenue
+WHERE total_spent > 0;
+
+-- Q27: (CTE Chain) Completed bookings → Rooms → Room Type count.
+WITH completed_bookings AS (
+    SELECT *
+    FROM bookings
+    WHERE status = 'Completed'
+),
+room_join AS (
+    SELECT
+        r.type
+    FROM completed_bookings cb
+    JOIN rooms r ON cb.room_id = r.room_id
+)
+SELECT
+    type,
+    COUNT(*) AS completed_count
+FROM room_join
+GROUP BY type;
+
+-- Q28: (View) Create a View named 'active_bookings' for confirmed bookings.
+CREATE VIEW active_bookings AS
+SELECT
+    g.first_name,
+    r.room_number,
+    b.check_in_date
+FROM bookings b
+JOIN guests g ON b.guest_id = g.guest_id
+JOIN rooms r ON b.room_id = r.room_id
+WHERE b.status = 'Confirmed';
+
+-- Q29: (Window / Logic) Find the booking with the latest Check-In Date.
+SELECT *
+FROM bookings
+ORDER BY check_in_date DESC
+LIMIT 1;
+
+-- Q30: (Complex Logic) Calculate the Occupancy Rate (%).
+SELECT 
+    (COUNT(DISTINCT room_id) * 100.0 / (SELECT COUNT(*) FROM rooms)) 
+    AS occupancy_rate_percentage
+FROM bookings;
