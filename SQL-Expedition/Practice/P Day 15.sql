@@ -55,12 +55,21 @@ INSERT INTO orders (customer_id, order_date, order_total) VALUES
 -- Stakeholder Email: "Hi! We want to run an RFM analysis. To start, can you give me a list of all customers showing three things: How many days it has been since their LAST order, their total number of orders, and their total lifetime spend?"
 -- Analytical Goal: Group by customer. Use MAX() to find their latest order, DATEDIFF() from '2024-12-31' to get Recency, COUNT() for Frequency, and SUM() for Monetary.
 SELECT
-
+	c.customer_id,
+    datediff('2024-12-31',MAX(o.order_date)) as 'LAST order day',
+    count(o.customer_id) as Total_order,
+    Sum(order_total) as Total_spend
+FROM
+	luxeaura_db.customers as c
+    LEFT JOIN luxeaura_db.orders as o
+    ON c.customer_id = o.customer_id
+GROUP BY c.customer_id;
 
 -- Request 2: "Scoring the Metrics (The NTILE trick)"
 -- Stakeholder Email: "Great. Now we need to rank them. Can you divide the customers into 4 equal buckets (quartiles) for each metric? Score them 1 to 4, where 4 is the BEST."
 -- Analytical Goal: Put Request 1 into a CTE. Then, use the NTILE(4) window function for R, F, and M. 
 -- ⚠️ TRICKY PART: For Frequency and Monetary, a HIGHER number gets a 4 (ORDER BY DESC). But for Recency, a LOWER number of days is better, so the ordering must be flipped!
+
 
 -- Request 3: "The RFM Cell"
 -- Stakeholder Email: "Awesome. Marketing tools usually need a single 3-digit 'RFM Score' (like '444' or '141'). Can you combine the R, F, and M scores into a single text column?"
